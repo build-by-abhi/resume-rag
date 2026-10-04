@@ -1,0 +1,32 @@
+Dr. Ananya Iyer
+Bengaluru, India
+ananya.iyer@example.com | +91 80 4000 1234
+linkedin.com/in/ananya-iyer
+
+PROFESSIONAL SUMMARY
+Applied ML researcher specialising in retrieval-augmented generation and
+evaluation of large language models for enterprise search.
+
+EXPERIENCE
+Principal ML Engineer | Sarvam AI | 2022 - Present
+Built a hybrid retrieval pipeline combining BM25 and pgvector with reciprocal
+rank fusion, improving recall@10 by 34%.
+Designed a reranking stage with a cross-encoder over MiniLM checkpoints.
+Published three papers on hallucination detection in grounded generation.
+
+Machine Learning Engineer | Flipkart | 2018 - 2022
+Fine-tuned transformer models with PyTorch and Hugging Face.
+Deployed model serving on Kubernetes with Docker images.
+Built feature stores on PostgreSQL for 12 business domains.
+
+EDUCATION
+Ph.D. Machine Learning | Indian Institute of Science | 2018
+
+SKILLS
+Languages: Python, R, SQL
+ML: PyTorch, TensorFlow, scikit-learn, Hugging Face, LangChain
+Data: PostgreSQL, Pinecone, FAISS, Airflow, Spark
+Cloud: GCP, Docker, Kubernetes, MLflow
+
+LANGUAGES
+English, Hindi, Kannada

@@ -1,0 +1,26 @@
+Tomasz Nowak
+Krakow, Poland
+tomasz.nowak@example.com | +48 12 555 2233
+
+SUMMARY
+Infrastructure engineer focused on reliability, Kubernetes and CI/CD. Reduced
+paging volume by building better observability.
+
+EXPERIENCE
+Senior DevOps Engineer | Allegro | 2020 - Present
+Operated 40 Kubernetes clusters across three cloud regions.
+Built a CI/CD pipeline with GitHub Actions and ArgoCD cutting deploy time
+from 45 to 8 minutes.
+Introduced Terraform modules that standardised 200+ cloud resources.
+
+Systems Administrator | CD Projekt | 2016 - 2020
+Managed Linux servers, Apache and Nginx in production.
+Automated backups with Bash and Python scripts.
+
+EDUCATION
+B.Eng. Computer Engineering | AGH University of Science and Technology | 2016
+
+SKILLS
+Cloud: AWS, GCP, Terraform, Docker, Kubernetes
+Languages: Bash, Python, Go
+Tooling: GitHub Actions, Jenkins, Grafana, Prometheus, Ansible

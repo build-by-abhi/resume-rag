@@ -1,0 +1,26 @@
+Marcus Webb
+Austin, TX, USA
+marcus.webb@example.com | (512) 555-9876
+github.com/marcuswebb
+
+PROFILE
+Frontend developer focused on React and design systems. Enjoys turning complex
+product requirements into accessible interfaces.
+
+EXPERIENCE
+Frontend Developer | Atlassian | 2022 - Present
+Rebuilt the component library in React and TypeScript, adopted by 9 teams.
+Cut bundle size by 38% using code splitting and lazy loading.
+Added end-to-end tests with Playwright.
+
+Junior Web Developer | SiteGround | 2020 - 2022
+Built marketing sites with HTML, CSS and vanilla JavaScript.
+Introduced npm and ESLint to the team workflow.
+
+EDUCATION
+B.Sc. Computer Science | University of Texas at Austin | 2020
+
+SKILLS
+Languages: JavaScript, TypeScript, HTML, CSS
+Frameworks: React, Next.js, Vue
+Tools: Jest, Cypress, Figma, Git

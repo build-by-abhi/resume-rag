@@ -1,0 +1,58 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 906 >>
+stream
+BT
+/F1 11 Tf
+14 TL
+1 0 0 1 60 780 Tm
+(Elena Vasquez) Tj T*
+(Munich, Germany) Tj T*
+(elena.vasquez@example.com | +49 89 5550 1122) Tj T*
+(linkedin.com/in/elenavasquez) Tj T*
+() Tj T*
+(SUMMARY) Tj T*
+(Platform engineer with 9 years running container platforms and) Tj T*
+(developer tooling for regulated enterprise environments.) Tj T*
+() Tj T*
+(EXPERIENCE) Tj T*
+(Principal Platform Engineer | Deutsche Telekom | 2020 - Present) Tj T*
+(Migrated 300 services to Kubernetes across two regions.) Tj T*
+(Built a GitOps delivery pipeline with ArgoCD and Terraform.) Tj T*
+(Introduced OpenTelemetry tracing, cutting incident time by half.) Tj T*
+() Tj T*
+(EDUCATION) Tj T*
+(B.Sc. Informatics | Technical University of Munich | 2014) Tj T*
+() Tj T*
+(SKILLS) Tj T*
+(Cloud: AWS, Azure, Terraform, Kubernetes, Docker) Tj T*
+(Languages: Go, Python, Bash) Tj T*
+(Tooling: Prometheus, Grafana, Ansible, Jenkins) Tj T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1268
+%%EOF

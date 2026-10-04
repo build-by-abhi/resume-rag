@@ -1,0 +1,53 @@
+# ===========================================================================
+# Python dependencies for the Resume RAG API.
+#
+#   pip install -r requirements.txt
+#
+# Version policy: ranges, not exact pins.
+# A few packages here ship compiled wheels (pydantic-core, psycopg-binary) and a
+# hard pin means the project stops installing the day your Python releases. These
+# ranges stay inside one major version, so behaviour is stable while the install
+# still works on Python 3.11 through 3.14. For a deployable app you would pin
+# exactly with a lock file (pip-tools / uv) and upgrade deliberately.
+# ===========================================================================
+
+# ---- Web framework -------------------------------------------------------
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.34,<1.0
+python-multipart>=0.0.20,<1.0  # required for multipart/form-data uploads
+pydantic>=2.10,<3.0
+pydantic-settings>=2.7,<3.0
+
+# ---- Database -------------------------------------------------------------
+# psycopg3 is the async-capable Postgres driver SQLAlchemy 2.x uses here.
+sqlalchemy[asyncio]>=2.0.36,<3.0
+psycopg[binary]>=3.2,<4.0
+pgvector>=0.3.6,<0.4             # SQLAlchemy types for the pgvector extension
+
+# ---- Document parsing -----------------------------------------------------
+pypdf>=5.1,<7.0                  # pure-python PDF text extraction
+pdfminer.six>=20250327            # fallback / layout-preserving extractor
+python-docx>=1.1,<2.0            # .docx resumes
+
+# ---- Optional: real semantic embeddings + reranking ----------------------
+# These give free, local, genuinely semantic embeddings and the cross-encoder
+# reranker. They are installed by default because they are the recommended
+# configuration. Torch's CPU build is enough.
+sentence-transformers>=3.3,<4.0
+torch>=2.5
+
+# ---- Optional: LLM providers (only needed for written answers) -----------
+# Without one of these the app still searches and filters correctly - the
+# answer panel falls back to an extractive summary.
+# huggingface_hub gives you HuggingFace Inference API access for BOTH the LLM
+# (e.g. meta-llama/Llama-3.2-3B-Instruct) and, optionally, hosted embeddings.
+# huggingface_hub>=0.30
+# openai>=1.59,<3.0
+# anthropic>=0.42,<1.0
+# google-genai>=0.3,<2.0
+
+# ---- Testing / tooling ----------------------------------------------------
+pytest>=8.3,<9.0
+pytest-asyncio>=0.25,<2.0
+httpx>=0.28,<1.0                 # used by FastAPI's TestClient
+ruff>=0.8,<1.0                    # linter/formatter

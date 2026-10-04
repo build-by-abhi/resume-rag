@@ -1,0 +1,57 @@
+# ==========================================================================
+# Local dev stack: Postgres + pgvector, the FastAPI backend, and the React app.
+#   docker compose up --build
+# ==========================================================================
+services:
+  db:
+    # pgvector/pgvector:16 = postgres 16 with the pgvector extension baked in.
+    image: pgvector/pgvector:pg16
+    container_name: resume-rag-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-resume_rag}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Runs ONCE on first boot of an empty volume. This is what enables the
+      # `vector` type and installs the HNSW/IVFFlat index operators.
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-resume_rag}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: resume-rag-api
+    env_file:
+      - ./backend/.env
+    environment:
+      # Inside the compose network the host is the service name, not localhost.
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-resume_rag}
+      UPLOAD_DIR: /app/storage/resumes
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/storage/resumes:/app/storage/resumes
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: resume-rag-web
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:

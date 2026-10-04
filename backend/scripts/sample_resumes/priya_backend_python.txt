@@ -1,0 +1,32 @@
+Priya Raghunathan
+Berlin, Germany
+priya.raghunathan@example.com | +49 30 5551234
+linkedin.com/in/priya-raghunathan | github.com/praghu
+
+SUMMARY
+Senior backend engineer with 8 years building data-intensive services. Led the
+migration of a monolithic billing system to an event-driven architecture.
+
+EXPERIENCE
+Staff Backend Engineer | Zalando | 2021 - Present
+Rebuilt the search pipeline on PostgreSQL and pgvector, cutting p95 query
+latency from 1200 ms to 180 ms.
+Designed a Kafka-based ingestion flow handling 40k events per second.
+Mentored 4 engineers and introduced code review standards.
+
+Backend Engineer | Delivery Hero | 2017 - 2021
+Built REST APIs in Python and FastAPI serving 2M requests per day.
+Migrated the reporting stack from MySQL to PostgreSQL with zero downtime.
+Introduced Docker and Kubernetes for the deployment pipeline.
+
+EDUCATION
+M.Sc. Computer Science | Technische Universitat Berlin | 2017
+
+SKILLS
+Languages: Python, JavaScript, SQL, Go
+Frameworks: FastAPI, Django, React
+Data: PostgreSQL, Kafka, Airflow, Redis, pgvector
+Cloud: AWS, Docker, Kubernetes, Terraform
+
+CERTIFICATIONS
+AWS Certified Solutions Architect
