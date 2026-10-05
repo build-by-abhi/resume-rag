@@ -53,4 +53,24 @@ def selector_loop_factory():
     return None
 
 
+def run_async(coro):
+    """
+    Run a coroutine on a loop psycopg can actually use.
+
+    `asyncio.run()` on Windows creates a ProactorEventLoop, which psycopg's
+    async driver rejects:
+
+        InterfaceError: Psycopg cannot use the 'ProactorEventLoop' to run in
+        async mode.
+
+    `loop_factory` on `asyncio.run` requires Python 3.12+. Use this instead of
+    a bare `asyncio.run` anywhere the coroutine touches the database - scripts,
+    MCP entry points, ad-hoc evaluation.
+    """
+    factory = selector_loop_factory()
+    if factory is None:
+        return asyncio.run(coro)
+    return asyncio.run(coro, loop_factory=factory)
+
+
 configure_event_loop()

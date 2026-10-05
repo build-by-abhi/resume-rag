@@ -203,6 +203,7 @@ resume_rag/
 │   │   │   ├── vectordb/         pgvector queries
 │   │   │   ├── retrieval/        filters, hybrid (RRF), rerank, answer
 │   │   │   └── llm/              provider-agnostic client (4 backends)
+│   │   ├── mcp/                  MCP server: tools, resources, prompts
 │   │   ├── prompts/              every prompt, in one reviewable file
 │   │   └── utils/                text cleaning, upload safety
 │   ├── scripts/
@@ -211,7 +212,7 @@ resume_rag/
 │   │   ├── check_llm.py          verify the configured LLM provider
 │   │   ├── make_sample_files.py  generate the PDF/DOCX fixtures
 │   │   └── sample_resumes/       6 realistic sample resumes (txt, pdf, docx)
-│   └── tests/                    226 tests (unit + integration)
+│   └── tests/                    260 tests (unit + integration)
 │
 └── frontend/                     React 18 + TypeScript + Vite + Tailwind
     └── src/
@@ -436,6 +437,109 @@ network round trip, so a 400-chunk upload becomes 400 HTTP requests.
 
 ---
 
+## MCP server (`app/mcp`)
+
+The REST API serves your frontend. The MCP server serves an **LLM** — same
+retrieval engine, same database, different consumer. That is what makes the
+candidate pool usable from Claude Desktop, an IDE, or another agent without
+writing a second integration per client.
+
+```
+MCP tool   ->  HybridSearcher / PgVectorStore / AnswerGenerator / IngestionPipeline
+```
+
+No duplicated logic. A bug fixed in `hybrid.py` fixes the MCP surface for free.
+
+### What it exposes
+
+| Primitive | Name | Who controls it |
+|---|---|---|
+| **Tool** | `search_candidates` | model — hybrid search with structured filters |
+| **Tool** | `match_job_description` | model — rank the pool against a JD |
+| **Tool** | `list_available_skills` | model — which skills actually exist here |
+| **Tool** | `ingest_resume` | model — **writes**; not annotated read-only |
+| **Resource** | `resume://candidates/{candidate_id}` | app — full profile + every embedded chunk |
+| **Resource** | `resume://candidates` | app — the whole pool, one line each |
+| **Resource** | `talent://facets/skills` | app — skill histogram for the pool |
+| **Resource** | `talent://corpus/stats` | app — counts + active config |
+| **Prompt** | `/screen_against_jd` | user — full screening workflow |
+
+Choosing the primitive correctly is the main design decision: a read-only
+profile behind a *tool* means the model may never ask for it, and a mutating
+operation behind a *resource* fires without the model realising it did anything.
+
+### Running it
+
+```bash
+cd backend
+
+# stdio - for Claude Desktop, an IDE, or any local MCP host
+python -m app.mcp
+
+# Streamable HTTP - remote / shared / multi-tenant
+python -m app.mcp --transport http --host 0.0.0.0 --port 9000
+
+# Stateless 2026-07-28 dialect (no sessions, scales round-robin)
+python -m app.mcp --transport http --stateless
+```
+
+Claude Desktop / IDE config:
+
+```json
+{
+  "mcpServers": {
+    "resume-rag": {
+      "command": "python",
+      "args": ["-m", "app.mcp"],
+      "cwd": "/absolute/path/to/backend",
+      "env": {
+        "DATABASE_URL": "postgresql+psycopg://postgres:postgres@localhost:5432/resume_rag",
+        "EMBEDDING_PROVIDER": "sentence-transformers"
+      }
+    }
+  }
+}
+```
+
+### Verifying it
+
+```bash
+python -m app.mcp.inspect      # what the server exposes, no transport
+python -m app.mcp.smoke        # every primitive against the live database
+python -m app.mcp.probe_stdio  # real JSON-RPC over pipes, like a real client
+python -m app.mcp.probe_http   # Streamable HTTP (needs the server running)
+```
+
+`probe_stdio` is the important one. It exists because of a bug that is easy to
+ship and hard to diagnose:
+
+> **On stdio, stdout IS the JSON-RPC transport.** One stray log line is parsed as
+> a malformed frame and the client reports
+> `Response ended unexpectedly and may be incomplete.`
+
+The probe parses every stdout line as JSON to prove the stream stays clean, and
+speaks the handshake dialect each transport actually expects:
+
+| Transport | Dialect | Why |
+|---|---|---|
+| stdio | handshake session | a stdio process *is* a session |
+| HTTP | handshake session (default) | what current MCP hosts speak |
+| HTTP `--stateless` | `2026-07-28` | no sessions; capabilities in `_meta`; round-robin scalable |
+
+### Two gotchas this project already hit
+
+1. **Logging to stdout corrupts stdio.** `app/core/logging.py` now takes a
+   stream, and `python -m app.mcp` forces `sys.stderr`. The MCP SDK mitigates
+   this too — it claims fd 1 and repoints it at stderr *once serving starts* —
+   but anything logged before that still lands on real stdout.
+
+2. **The dialects are not interchangeable.** Sending a `2026-07-28` envelope
+   over stdio is rejected by design:
+   `-32600 this connection serves the handshake protocol era`. Match the
+   dialect to the transport.
+
+---
+
 ## Inspecting the vectors
 
 A `vector` column is a 384-number list, which is unreadable in a data grid. Use
@@ -621,7 +725,7 @@ interview:
 
 | Method | Path | Purpose |
 |---|---|---|
-| `GET` | `/health` | DB status, embedding provider, LLM status, counts |
+| `GET` | `/health` | DB status, embedding provider, LLM status + reason, counts |
 | `GET` | `/health/ready` | strict readiness probe |
 | `GET` | `/stats` | corpus statistics |
 | `POST` | `/api/candidates/upload` | multipart upload (PDF/DOCX/TXT) |
@@ -634,5 +738,6 @@ interview:
 | `GET` | `/api/search/skills` | skill facets with candidate counts |
 | `GET` | `/api/search/filters` | seniority / location / education options |
 | `POST` | `/api/match` | JD → candidate scorecards |
+| `*` | `/mcp` | **MCP Streamable HTTP** (on the `app.mcp` server, not this API) |
 
 Interactive docs at `http://127.0.0.1:8000/docs`.
